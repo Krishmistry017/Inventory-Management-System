@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventory App</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<section id="login-page" class="page">
+  <div class="centered-box">
+    <h1>Login</h1>
+    <form onsubmit="login(event)">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</section>
+
+<!-- DASHBOARD PAGE -->
+<section id="dashboard-page" class="page hidden">
+  <div class="sidebar">
+    <h2>Inventory App</h2>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('items')">Items</a>
+    <a href="#" onclick="showPage('incoming')">Incoming Items</a>
+    <a href="#" onclick="showPage('outgoing')">Outgoing Items</a>
+    <a href="#" onclick="showPage('reports')">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <main class="main-content">
+    <h1>Dashboard</h1>
+    <p>Welcome to your Inventory System.</p>
+    <h1>
+      <span class="highlight">Manage your inventory efficiently</span> with real-time tracking, reporting, and analytics.
+      </h1>
+
+  </main>
+</section>
+
+<!-- ITEMS PAGE -->
+<section id="items-page" class="page hidden">
+  <div id="add-item-form" class="form-container hidden">
+  <h2>Add New Item</h2>
+  <form onsubmit="saveNewItem(event)">
+    <div class="form-group">
+      <label for="new-item-name">Item Name:</label>
+      <input type="text" id="new-item-name" required>
+    </div>
+    <div class="form-group">
+      <label for="new-item-type">Item Type:</label>
+      <input type="text" id="new-item-type" required>
+    </div>
+    <div class="form-group">
+      <label for="new-item-stock">Initial Stock:</label>
+      <input type="number" id="new-item-stock" required>
+    </div>
+    <div class="form-group">
+      <label for="new-item-price">Unit Price:</label>
+      <input type="number" id="new-item-price" required>
+    </div>
+    <div class="form-group">
+      <label for="new-item-expiry">Expiry Date:</label>
+      <input type="date" id="new-item-expiry">
+    </div>
+    <div class="form-actions">
+      <button type="submit">Add Item</button>
+      <button type="button" onclick="document.getElementById('add-item-form').classList.add('hidden')">Cancel</button>
+    </div>
+  </form>
+</div>
+  
+  <div class="sidebar">
+    <h2>Inventory App</h2>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('items')">Items</a>
+    <a href="#" onclick="showPage('incoming')">Incoming Items</a>
+    <a href="#" onclick="showPage('outgoing')">Outgoing Items</a>
+    <a href="#" onclick="showPage('reports')">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <main class="main-content">
+    <h1>Manage Items</h1>
+
+    <div class="search-bar">
+      <input type="text" id="item-search" placeholder="Search items...">
+      <button onclick="addNewItem()">Add New Item</button>
+    </div>
+
+    <div class="table-container">
+      <table id="items-table">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Item Type</th>
+            <th>Current Stock</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="items-list">
+          <!-- Items will be loaded here dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+</section>
+
+<!-- INCOMING ITEMS PAGE -->
+<section id="incoming-page" class="page hidden">
+  <div class="sidebar">
+    <h2>Inventory App</h2>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('items')">Items</a>
+    <a href="#" onclick="showPage('incoming')">Incoming Items</a>
+    <a href="#" onclick="showPage('outgoing')">Outgoing Items</a>
+    <a href="#" onclick="showPage('reports')">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <main class="main-content">
+    <h1>Incoming Items</h1>
+    
+    <div class="action-bar">
+      <button onclick="showAddIncomingForm()">Add New Purchase</button>
+    </div>
+
+    <div id="add-incoming-form" class="form-container hidden">
+      <h2>Add Incoming Item</h2>
+      <form onsubmit="saveIncomingItem(event)">
+        <div class="form-group">
+          <label for="item-name">Item Name:</label>
+          <input type="text" id="item-name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="item-type">Item Type:</label>
+          <select id="item-type" required>
+            <option value="">Select Type</option>
+            <option value="raw-material">Raw Material</option>
+            <option value="finished-goods">Finished Goods</option>
+            <option value="packaging">Packaging</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="purchase-date">Purchase Date:</label>
+          <input type="date" id="purchase-date" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="expiry-date">Expiry Date (if applicable):</label>
+          <input type="date" id="expiry-date">
+        </div>
+        
+        <div class="form-group">
+          <label for="quantity">Quantity:</label>
+          <input type="number" id="quantity" min="1" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="unit-price">Unit Price:</label>
+          <input type="number" id="unit-price" step="0.01" min="0" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="supplier">Supplier:</label>
+          <input type="text" id="supplier">
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit">Save Item</button>
+          <button type="button" onclick="hideAddIncomingForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-container">
+      <table id="incoming-table">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Item Type</th>
+            <th>Purchase Date</th>
+            <th>Expiry Date</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="incoming-list">
+          <!-- Incoming items will be loaded here dynamically -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+</section>
+
+<!-- OUTGOING ITEMS PAGE -->
+<section id="outgoing-page" class="page hidden">
+  <div class="sidebar">
+    <h2>Inventory App</h2>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('items')">Items</a>
+    <a href="#" onclick="showPage('incoming')">Incoming Items</a>
+    <a href="#" onclick="showPage('outgoing')">Outgoing Items</a>
+    <a href="#" onclick="showPage('reports')">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <main class="main-content">
+    <h1>Outgoing Items</h1>
+    
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('sales')">Sales</button>
+      <button class="tab-btn" onclick="switchTab('wastage')">Wastage</button>
+    </div>
+    
+    <div id="sales-tab" class="tab-content">
+      <div class="action-bar">
+        <button onclick="showAddSaleForm()">Record New Sale</button>
+      </div>
+      
+      <div id="add-sale-form" class="form-container hidden">
+        <h2>Record Item Sale</h2>
+        <form onsubmit="saveSaleItem(event)">
+          <div class="form-group">
+            <label for="sale-item">Select Item:</label>
+            <select id="sale-item" required onchange="updateAvailableStock()">
+              <option value="">Select Item</option>
+              <!-- Items will be loaded dynamically -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="available-stock">Available Stock:</label>
+            <input type="text" id="available-stock" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="sale-date">Sale Date:</label>
+            <input type="date" id="sale-date" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="sale-quantity">Quantity:</label>
+            <input type="number" id="sale-quantity" min="1" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="sale-price">Unit Price:</label>
+            <input type="number" id="sale-price" step="0.01" min="0" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="customer">Customer:</label>
+            <input type="text" id="customer">
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit">Save Sale</button>
+            <button type="button" onclick="hideAddSaleForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <table id="sales-table">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Sale Date</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+              <th>Customer</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sales-list">
+            <!-- Sales will be loaded here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div id="wastage-tab" class="tab-content hidden">
+      <div class="action-bar">
+        <button onclick="showAddWastageForm()">Record Wastage</button>
+      </div>
+      
+      <div id="add-wastage-form" class="form-container hidden">
+        <h2>Record Wastage</h2>
+        <form onsubmit="saveWastageItem(event)">
+          <div class="form-group">
+            <label for="wastage-item">Select Item:</label>
+            <select id="wastage-item" required onchange="updateWastageAvailableStock()">
+              <option value="">Select Item</option>
+              <!-- Items will be loaded dynamically -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="wastage-available-stock">Available Stock:</label>
+            <input type="text" id="wastage-available-stock" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="wastage-date">Date:</label>
+            <input type="date" id="wastage-date" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="wastage-quantity">Quantity:</label>
+            <input type="number" id="wastage-quantity" min="1" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="wastage-reason">Reason:</label>
+            <select id="wastage-reason" required>
+              <option value="">Select Reason</option>
+              <option value="expired">Expired</option>
+              <option value="damaged">Damaged</option>
+              <option value="quality-issue">Quality Issue</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="wastage-notes">Notes:</label>
+            <textarea id="wastage-notes"></textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit">Save Wastage</button>
+            <button type="button" onclick="hideAddWastageForm()">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-container">
+        <table id="wastage-table">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Date</th>
+              <th>Quantity</th>
+              <th>Reason</th>
+              <th>Cost Impact</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="wastage-list">
+            <!-- Wastage records will be loaded here dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</section>
+
+<!-- REPORTS PAGE -->
+<section id="reports-page" class="page hidden">
+  <div class="sidebar">
+    <h2>Inventory App</h2>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('items')">Items</a>
+    <a href="#" onclick="showPage('incoming')">Incoming Items</a>
+    <a href="#" onclick="showPage('outgoing')">Outgoing Items</a>
+    <a href="#" onclick="showPage('reports')">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+
+  <main class="main-content">
+    <h1>Reports</h1>
+    
+    <div class="report-filters">
+      <div class="form-group">
+        <label for="report-type">Report Type:</label>
+        <select id="report-type" onchange="changeReportType()">
+          <option value="inventory">Current Inventory</option>
+          <option value="stock-movement">Stock Movement</option>
+          <option value="expiry">Expiring Items</option>
+          <option value="wastage">Wastage Analysis</option>
+          <option value="sales">Sales Summary</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="date-range">Date Range:</label>
+        <select id="date-range">
+          <option value="this-week">This Week</option>
+          <option value="this-month">This Month</option>
+          <option value="last-month">Last Month</option>
+          <option value="custom">Custom Range</option>
+        </select>
+      </div>
+      
+      <div id="custom-date-range" class="hidden">
+        <div class="form-group">
+          <label for="start-date">Start Date:</label>
+          <input type="date" id="start-date">
+        </div>
+        <div class="form-group">
+          <label for="end-date">End Date:</label>
+          <input type="date" id="end-date">
+        </div>
+      </div>
+      
+      <button onclick="generateReport()">Generate Report</button>
+      <button onclick="exportReport()">Export</button>
+    </div>
+    
+    <div id="report-container" class="report-container">
+      <!-- Report data will be displayed here -->
+      <p>Select report type and date range to generate a report.</p>
+    </div>
+  </main>
+</section>
+
+<script src="js/app.js"></script>
+</body>
+</html>
